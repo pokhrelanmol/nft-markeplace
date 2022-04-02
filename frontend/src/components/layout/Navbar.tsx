@@ -37,9 +37,9 @@ const Navbar = () => {
             </div>
             {/* links */}
             <ul className="flex space-x-5">
-                <li className="text-medium hover:border-b hover:border-blue-500 cursor-pointer">
+                <link className="text-medium hover:border-b hover:border-blue-500 cursor-pointer">
                     Home
-                </li>
+                </link>
                 <li className="text-medium hover:border-b hover:border-blue-500 cursor-pointer">
                     Create
                 </li>

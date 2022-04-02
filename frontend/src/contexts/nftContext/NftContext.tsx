@@ -14,6 +14,7 @@ import { useTransaction } from "../TransactionContext";
 import NFTAbi from "../../abis/NFT.json";
 import { ItemDetails, NewItem, ProviderProps } from "./types";
 import { create } from "ipfs-http-client";
+import { setNotification } from "../../helpers/setNotification";
 const IPFS = create({ url: "https://ipfs.infura.io:5001" });
 export enum actionTypes {
     "FETCH_NFT" = "FETCH_NFT_ITEMS",
@@ -101,15 +102,16 @@ const reducer = (state: MarketState, action: Actions): MarketState => {
                             });
                         }
                     }
+                    // items are present here
                     console.log(items);
-                    return Promise.resolve(items);
+                    // return Promise.resolve(items);
                 } catch (error) {
                     console.log(error);
                 }
             };
+            loadListedNfts();
             // ? items array is empty here i dont know what is happening
-            let _items = loadListedNfts().then((res) => console.log(res));
-            console.log(_items);
+            console.log(items);
             return items;
 
         case actionTypes.CREATE_NFT:
@@ -120,7 +122,6 @@ const reducer = (state: MarketState, action: Actions): MarketState => {
                     const result = await IPFS.add(
                         JSON.stringify({ image, price, name, description })
                     );
-                    console.log(result);
                     // pass the  uri path to the mintThenList function
                     mintNft(result.path);
                 } catch (error) {
@@ -135,7 +136,6 @@ const reducer = (state: MarketState, action: Actions): MarketState => {
                 setPending(true);
                 mint.wait();
 
-                setPending(false);
                 // get tokenId of new nft
                 const id = await contract.Nft.tokenCount();
                 // approve marketplace to spend nft
@@ -144,10 +144,8 @@ const reducer = (state: MarketState, action: Actions): MarketState => {
                     true
                 );
 
-                setPending(true);
                 approve.wait();
 
-                setPending(false);
                 // add nft to marketplace
                 const listingPrice = ethers.utils.parseEther(price.toString());
                 const list = await contract.Marketplace.listItem(
@@ -156,20 +154,25 @@ const reducer = (state: MarketState, action: Actions): MarketState => {
                     listingPrice
                 );
 
-                setPending(true);
                 list.wait();
 
                 setPending(false);
-                console.log(list);
+                setNotification({
+                    message:
+                        "Hooray! Your NFT is created and listed successfully",
+                    type: "success",
+                });
                 //  * Offered event will fire after listing nft
             };
+            // TODO:redirect to homepage and fetch the item again which should include newly created item
             return [...state];
+
             break;
         case actionTypes.BUY_NFT:
             const buyNft = async () => {
                 const buy = await contract.Marketplace.abi
                     .purchaseItem
-                    // !ERROR HERE
+                    // !the action.payload should have a itemId as defined in its type but here i m getting err when trying to fetch it
                     // action.payload.itemId
                     ();
             };
