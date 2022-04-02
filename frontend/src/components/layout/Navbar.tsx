@@ -5,7 +5,7 @@ import { useTransaction } from "../../contexts/TransactionContext";
 import { useWallet } from "../../contexts/WalletContext";
 import CircularLoader from "../CircularLoader";
 import { getTruncatedAddress } from "../../helpers";
-import { setNotification } from "../../helpers/toast";
+import { setNotification } from "../../helpers/setNotification";
 import NotificationBar from "../NotificationBar";
 const Navbar = () => {
     const { pending } = useTransaction();
@@ -21,7 +21,7 @@ const Navbar = () => {
             setWalletAddress(address);
             setNotification({
                 message: "Wallet connected successfully!",
-                type: "info",
+                type: "success",
             });
         }
     };
@@ -62,8 +62,8 @@ const Navbar = () => {
                         Connect Wallet
                     </Button>
                 )}
-                <NotificationBar />
             </div>
+            <NotificationBar />
         </nav>
     );
 };

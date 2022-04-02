@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Input from "./Input";
 import FileBase64 from "react-file-base64";
 import Button from "./Button";
 import { actionTypes, useNft } from "../contexts/nftContext/NftContext";
-// import { getIPFSHTTPCLIENT } from "../helpers";
-
+import { useTransaction } from "../contexts/TransactionContext";
 const CreateNft = () => {
+    const { pending, setPending } = useTransaction();
     const { dispatch } = useNft();
     const [image, setImage] = React.useState("");
 
@@ -15,7 +15,7 @@ const CreateNft = () => {
         description: "",
         price: "",
     });
-
+    useEffect(() => {}, []);
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
@@ -33,13 +33,23 @@ const CreateNft = () => {
             // TODO:use toast notification here
             alert("all field are required");
         } else {
-            dispatch({ type: actionTypes.CREATE_NFT, payload: formData });
+            dispatch({
+                type: actionTypes.CREATE_NFT,
+                payload: {
+                    items: formData,
+                    transactionState: {
+                        pending: pending,
+                        setPending: setPending,
+                    },
+                },
+            });
             setFormData({
                 image: "",
                 name: "",
                 description: "",
                 price: "",
             });
+            setImage("");
         }
     };
     return (
@@ -83,9 +93,6 @@ const CreateNft = () => {
             <Button buttonType="primary" onClick={handleClick}>
                 Create Nfth
             </Button>
-            {/* demo buy nft */}
-            {/* i have a itemId as a payload params here but. it is not present in the reducer */}
-            {/* <button onClick={dispatch({type:actionTypes.BUY_NFT,payload:{itemId}})}></button> */}
         </div>
     );
 };
