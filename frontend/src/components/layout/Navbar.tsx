@@ -7,6 +7,7 @@ import CircularLoader from "../CircularLoader";
 import { getTruncatedAddress } from "../../helpers";
 import { setNotification } from "../../helpers/setNotification";
 import NotificationBar from "../NotificationBar";
+import { Link } from "react-router-dom";
 const Navbar = () => {
     const { pending } = useTransaction();
     const { walletAddress, setWalletAddress } = useWallet();
@@ -37,15 +38,24 @@ const Navbar = () => {
             </div>
             {/* links */}
             <ul className="flex space-x-5">
-                <link className="text-medium hover:border-b hover:border-blue-500 cursor-pointer">
+                <Link
+                    to="/"
+                    className="text-medium hover:border-b hover:border-blue-500 cursor-pointer"
+                >
                     Home
-                </link>
-                <li className="text-medium hover:border-b hover:border-blue-500 cursor-pointer">
+                </Link>
+                <Link
+                    to="/create"
+                    className="text-medium hover:border-b hover:border-blue-500 cursor-pointer"
+                >
                     Create
-                </li>
-                <li className="text-medium hover:border-b hover:border-blue-500 cursor-pointer">
+                </Link>
+                <Link
+                    to="/my-nft"
+                    className="text-medium hover:border-b hover:border-blue-500 cursor-pointer"
+                >
                     My NFT
-                </li>
+                </Link>
             </ul>
             {/* connect wallet */}
             <div>

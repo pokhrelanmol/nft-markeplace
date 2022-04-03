@@ -1,3 +1,5 @@
+import { Actions } from "./actionsTypes";
+
 export interface NewItem {
     name: string;
     description: string;
@@ -18,4 +20,14 @@ export interface ItemDetails {
 
 export type ProviderProps = {
     children: React.ReactNode;
+};
+
+export type MarketState = ItemDetails[];
+export type Contract = {
+    Marketplace: any;
+    Nft: any;
+};
+export type ContextArgs = {
+    items: MarketState;
+    dispatch: React.Dispatch<Actions>;
 };

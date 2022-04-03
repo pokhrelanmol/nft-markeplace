@@ -12,52 +12,15 @@ import MarketPlaceAbi from "../../abis/Marketplace.json";
 import NFTAddress from "../../deployedAddress/NFT-address.json";
 import { useTransaction } from "../TransactionContext";
 import NFTAbi from "../../abis/NFT.json";
-import { ItemDetails, NewItem, ProviderProps } from "./types";
 import { create } from "ipfs-http-client";
 import { setNotification } from "../../helpers/setNotification";
 const IPFS = create({ url: "https://ipfs.infura.io:5001" });
-export enum actionTypes {
-    "FETCH_NFT" = "FETCH_NFT_ITEMS",
-    "CREATE_NFT" = "CREATE_NEW_NFT",
-    "BUY_NFT" = "BUY_NFT",
-}
-
-type FETCH_NFT = {
-    type: actionTypes.FETCH_NFT;
-    // payload: ItemDetails;
-};
-type CREATE_NFT = {
-    type: actionTypes.CREATE_NFT;
-    payload: {
-        items: NewItem;
-        transactionState: {
-            pending: boolean;
-            setPending: React.Dispatch<React.SetStateAction<boolean>>;
-        };
-    };
-};
-type BUY_NFT = {
-    type: actionTypes.BUY_NFT;
-    payload: {
-        totalPrice: number;
-        itemId: number;
-        seller: string;
-        name: string;
-        description: string;
-        image: string;
-        sold?: boolean;
-        tokenId?: number;
-    };
-};
-type Contract = {
-    Marketplace: any;
-    Nft: any;
-};
-export type MarketState = ItemDetails[];
+import { Actions, actionTypes } from "./actionsTypes";
+import { ItemDetails, Contract, ProviderProps, MarketState } from "./types.d.";
+import { fetchNFt } from "./functions";
 
 const initialState: [] = [];
-type Actions = CREATE_NFT | BUY_NFT | FETCH_NFT;
-let contract: Contract = {
+export let contract: Contract = {
     Marketplace: {},
     Nft: {},
 };
@@ -170,7 +133,7 @@ const reducer = (state: MarketState, action: Actions): MarketState => {
             break;
         case actionTypes.BUY_NFT:
             const buyNft = async () => {
-                const buy = await contract.Marketplace.abi
+                const buy = await contract.Marketplace
                     .purchaseItem
                     // !the action.payload should have a itemId as defined in its type but here i m getting err when trying to fetch it
                     // action.payload.itemId
@@ -211,8 +174,8 @@ export const NftProvider = ({ children }: ProviderProps) => {
             Marketplace: MarketplaceContract,
             Nft: NFTContract,
         };
-
-        dispatch({ type: actionTypes.FETCH_NFT });
+        const marketItems = await fetchNFt(contract);
+        dispatch({ type: actionTypes.FETCH_NFT, payload: marketItems! });
     };
     useEffect(() => {
         init();

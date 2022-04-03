@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import Input from "./Input";
 import FileBase64 from "react-file-base64";
 import Button from "./Button";
-import { actionTypes, useNft } from "../contexts/nftContext/NftContext";
+import { useNft } from "../contexts/nftContext/NftContext";
 import { useTransaction } from "../contexts/TransactionContext";
+import { actionTypes } from "../contexts/nftContext/actionsTypes";
 const CreateNft = () => {
     const { pending, setPending } = useTransaction();
     const { dispatch } = useNft();
