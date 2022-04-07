@@ -1,4 +1,4 @@
-import { Actions } from "./actionsTypes";
+import { Actions, transactionStateType } from "./actions";
 
 export interface NewItem {
     name: string;
@@ -30,4 +30,8 @@ export type Contract = {
 export type ContextArgs = {
     items: MarketState;
     dispatch: React.Dispatch<Actions>;
+    createNewNft: (
+        item: NewItem,
+        transactionState: transactionStateType
+    ) => Promise<void>;
 };

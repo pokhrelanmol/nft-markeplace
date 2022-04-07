@@ -1,27 +1,58 @@
-import { transactionStateType } from "./actionsTypes";
-import { Contract, ItemDetails, NewItem } from "./types.d.";
+import { Contract, ItemDetails, MarketState, NewItem } from "./types";
 
 import { create } from "ipfs-http-client";
 import { ethers } from "ethers";
 import { setNotification } from "../../helpers/setNotification";
 
 const IPFS = create({ url: "https://ipfs.infura.io:5001" });
-export const fetchNFt = async (contract: Contract) => {
+export type transactionStateType = {
+    pending: boolean;
+    setPending: React.Dispatch<React.SetStateAction<boolean>>;
+};
+export enum actionTypes {
+    "FETCH_NFT" = "FETCH_NFT_ITEMS",
+    "CREATE_NFT" = "CREATE_NEW_NFT",
+    "BUY_NFT" = "BUY_NFT",
+}
+
+type FETCH_NFT = {
+    type: actionTypes.FETCH_NFT;
+    payload: MarketState;
+};
+type CREATE_NFT = {
+    type: actionTypes.CREATE_NFT;
+
+    // payload: {
+    //     items: NewItem;
+    //     transactionState: transactionStateType;
+    // };
+};
+type BUY_NFT = {
+    type: actionTypes.BUY_NFT;
+    payload: NewItem;
+};
+
+export type Actions = CREATE_NFT | BUY_NFT | FETCH_NFT;
+
+// functions to handle actions
+export const fetchNFt = async (
+    marketContract: ethers.Contract,
+    nftContract: ethers.Contract
+) => {
     const items: ItemDetails[] = [];
     try {
-        const numberOfItemInMarketplace =
-            await contract.Marketplace.itemCount();
+        const numberOfItemInMarketplace = await marketContract.itemCount();
         for (let i = 1; i <= numberOfItemInMarketplace.toString(); i++) {
             // fetch item from the items mapping providing the itemId
-            const item: ItemDetails = await contract.Marketplace.items(i);
+            const item: ItemDetails = await marketContract.items(i);
             if (!item.sold) {
                 // get uri url from nft contract
-                const uri = await contract.Nft.tokenURI(item.tokenId);
+                const uri = await nftContract.tokenURI(item.tokenId);
                 // use uri to fetch the nft metadata stored on ipfs
                 const response = await fetch(uri);
                 const metadata = await response.json();
                 // get total price of item (item price + marketFee)
-                const totalPrice = await contract.Marketplace.getTotalPrice(
+                const totalPrice = await marketContract.getTotalPrice(
                     item.itemId
                 );
                 items.push({
@@ -34,15 +65,12 @@ export const fetchNFt = async (contract: Contract) => {
                 });
             }
         }
-        // items are present here
-        console.log(items);
+
         return items;
-        // return Promise.resolve(items);
     } catch (error) {
         console.log(error);
     }
 };
-
 export const createNft = async (
     contract: Contract,
     item: NewItem,
@@ -50,6 +78,7 @@ export const createNft = async (
 ) => {
     const { image, name, description, price } = item;
     const { setPending } = transactionState;
+
     const createNft = async () => {
         try {
             const result = await IPFS.add(
@@ -90,10 +119,13 @@ export const createNft = async (
         list.wait();
 
         setPending(false);
+
+        // window.location.href = "/";
         setNotification({
             message: "Hooray! Your NFT is created and listed successfully",
             type: "success",
         });
+        return list;
         //  * Offered event will fire after listing nft
     };
 };

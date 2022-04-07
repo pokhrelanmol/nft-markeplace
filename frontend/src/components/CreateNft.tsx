@@ -4,10 +4,10 @@ import FileBase64 from "react-file-base64";
 import Button from "./Button";
 import { useNft } from "../contexts/nftContext/NftContext";
 import { useTransaction } from "../contexts/TransactionContext";
-import { actionTypes } from "../contexts/nftContext/actionsTypes";
+import { actionTypes } from "../contexts/nftContext/actions";
 const CreateNft = () => {
     const { pending, setPending } = useTransaction();
-    const { dispatch } = useNft();
+    const { dispatch, createNewNft } = useNft();
     const [image, setImage] = React.useState("");
 
     const [formData, setFormData] = useState({
@@ -34,16 +34,7 @@ const CreateNft = () => {
             // TODO:use toast notification here
             alert("all field are required");
         } else {
-            dispatch({
-                type: actionTypes.CREATE_NFT,
-                payload: {
-                    items: formData,
-                    transactionState: {
-                        pending: pending,
-                        setPending: setPending,
-                    },
-                },
-            });
+            createNewNft(formData, { setPending, pending });
             setFormData({
                 image: "",
                 name: "",
