@@ -35,10 +35,7 @@ type BUY_NFT = {
 export type Actions = CREATE_NFT | BUY_NFT | FETCH_NFT;
 
 // functions to handle actions
-export const fetchNFt = async (
-    marketContract: ethers.Contract,
-    nftContract: ethers.Contract
-) => {
+export const fetchNFt = async (marketContract: any, nftContract: any) => {
     const items: ItemDetails[] = [];
     try {
         const numberOfItemInMarketplace = await marketContract.itemCount();
@@ -85,7 +82,9 @@ export const createNft = async (
                 JSON.stringify({ image, price, name, description })
             );
             // pass the  uri path to the mintThenList function
-            mintNft(result.path);
+
+            await mintNft(result.path);
+            window.location.href = "/";
         } catch (error) {
             console.log("ipfs uri upload error: ", error);
         }
@@ -117,15 +116,12 @@ export const createNft = async (
         );
 
         list.wait();
-
         setPending(false);
 
-        // window.location.href = "/";
         setNotification({
             message: "Hooray! Your NFT is created and listed successfully",
             type: "success",
         });
         return list;
-        //  * Offered event will fire after listing nft
     };
 };

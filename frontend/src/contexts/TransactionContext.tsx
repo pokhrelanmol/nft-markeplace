@@ -11,7 +11,7 @@ export const TransactionContext = React.createContext<TransactionType>({
     setPending: () => {},
 } as TransactionType);
 export const TransactionProvider = ({ children }: ProviderProps) => {
-    const [pending, setPending] = React.useState(false);
+    const [pending, setPending] = React.useState(true);
     return (
         <TransactionContext.Provider value={{ pending, setPending }}>
             {children}

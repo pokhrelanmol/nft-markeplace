@@ -12,6 +12,7 @@ import {
     ContextArgs,
     Contract,
     ItemDetails,
+    MarketState,
     NewItem,
     ProviderProps,
 } from "./types";
@@ -22,6 +23,8 @@ import { actionTypes, fetchNFt } from "./actions";
 import NFTAbi from "../../abis/NFT.json";
 import { useTransaction } from "../TransactionContext";
 import { createNft, transactionStateType } from "./actions";
+import { Provider } from "@ethersproject/providers";
+import { isJsxFragment } from "typescript";
 // import { useNavigate } from "react-router-dom";
 export const NftContext = createContext<ContextArgs>({} as ContextArgs);
 export const NftProvider = ({ children }: ProviderProps) => {
@@ -47,12 +50,13 @@ export const NftProvider = ({ children }: ProviderProps) => {
             Marketplace: MarketplaceContract,
             Nft: NftContract,
         });
-        const marketState: ItemDetails[] = (await fetchNFt(
+        const marketState: MarketState = (await fetchNFt(
             MarketplaceContract,
             NftContract
-        )) as unknown as ItemDetails[];
-
-        dispatch({ type: actionTypes.FETCH_NFT, payload: marketState });
+        )) as unknown as MarketState;
+        if (await signer.getAddress()) {
+            dispatch({ type: actionTypes.FETCH_NFT, payload: marketState });
+        }
         setPending(false);
     };
     useEffect(() => {
