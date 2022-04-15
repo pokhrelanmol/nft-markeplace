@@ -1,3 +1,5 @@
+import { EtherscanProvider } from "@ethersproject/providers";
+import { ethers } from "ethers";
 import { Actions, transactionStateType } from "./actions";
 
 export interface NewItem {
@@ -24,8 +26,8 @@ export type ProviderProps = {
 
 export type MarketState = ItemDetails[];
 export type Contract = {
-    Marketplace: any;
-    Nft: any;
+    Marketplace: ethers.Contract;
+    Nft: ethers.Contract;
 };
 export type ContextArgs = {
     items: MarketState;
@@ -34,4 +36,12 @@ export type ContextArgs = {
         item: NewItem,
         transactionState: transactionStateType
     ) => Promise<void>;
+    handleBuyNft: (
+        item: ItemDetails
+        // transactionState: transactionStateType
+    ) => Promise<void>;
+    contract: {
+        Nft: ethers.Contract;
+        Marketplace: ethers.Contract;
+    };
 };

@@ -19,7 +19,7 @@ import {
 import MarketplaceAddress from "../../deployedAddress/Marketplace-address.json";
 import MarketPlaceAbi from "../../abis/Marketplace.json";
 import NFTAddress from "../../deployedAddress/NFT-address.json";
-import { actionTypes, fetchNFt } from "./actions";
+import { actionTypes, fetchNFt, buyNft } from "./actions";
 import NFTAbi from "../../abis/NFT.json";
 import { useTransaction } from "../TransactionContext";
 import { createNft, transactionStateType } from "./actions";
@@ -54,10 +54,10 @@ export const NftProvider = ({ children }: ProviderProps) => {
             MarketplaceContract,
             NftContract
         )) as unknown as MarketState;
+        setPending(false);
         if (await signer.getAddress()) {
             dispatch({ type: actionTypes.FETCH_NFT, payload: marketState });
         }
-        setPending(false);
     };
     useEffect(() => {
         init();
@@ -67,18 +67,29 @@ export const NftProvider = ({ children }: ProviderProps) => {
         transactionState: transactionStateType
     ) {
         try {
-            const newNft = await createNft(contract, item, transactionState);
+            await createNft(contract, item, transactionState);
             dispatch({ type: actionTypes.CREATE_NFT });
         } catch (error) {
             console.log(error);
         }
     }
-    // contract.Marketplace.on("Offered",async(itemId:string,nft:any,tokenId:string)=>{
-    //  ?do i need to fetch all the data here or just simply redirect user
-    // })
+    async function handleBuyNft(item: ItemDetails) {
+        const bought = await buyNft(
+            item.itemId,
+            item.totalPrice,
+            contract.Marketplace
+        );
+        console.log(bought);
+    }
     return (
         <NftContext.Provider
-            value={{ items: state, dispatch, createNewNft: handleCreateNft }}
+            value={{
+                items: state,
+                dispatch,
+                createNewNft: handleCreateNft,
+                handleBuyNft: handleBuyNft,
+                contract: contract,
+            }}
         >
             {children}
         </NftContext.Provider>

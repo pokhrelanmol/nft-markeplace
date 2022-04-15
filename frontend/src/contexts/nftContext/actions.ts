@@ -125,3 +125,14 @@ export const createNft = async (
         return list;
     };
 };
+export const buyNft = async (
+    itemId: number,
+    totalPrice: number,
+    marketplace: ethers.Contract
+) => {
+    await (
+        await marketplace.purchaseItem(itemId, { value: totalPrice })
+    ).wait();
+
+    console.log(itemId);
+};

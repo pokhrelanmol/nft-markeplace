@@ -1,24 +1,22 @@
-import React from "react";
-import { isTypeNode } from "typescript";
 import { useNft } from "../../contexts/nftContext/NftContext";
 import Button from "../Button";
 import { useTransaction } from "../../contexts/TransactionContext";
-import { Navigate } from "react-router-dom";
+import { useWallet } from "../../contexts/WalletContext";
+import { ethers } from "ethers";
+import NftCard from "../NftCard";
 const Home = () => {
-    const { items } = useNft();
+    const { items, handleBuyNft } = useNft();
     const { pending } = useTransaction();
-    console.log(items[0]);
+    const { walletAddress } = useWallet();
+
     return (
-        <div>
-            {items.length > 0 && !pending ? (
-                items.map((item, index) => (
-                    <div className="w-60 h-auto p-3 " key={index}>
-                        <img src={item.image} alt="nft image" />
-                        <h1>{item.name}</h1>
-                        <p>{item.description}</p>
-                        <p>{item.totalPrice.toString()}</p>
-                    </div>
-                ))
+        <div className="flex space-x-8 ">
+            {items.length > 0 && !pending && walletAddress ? (
+                <NftCard items={items} handleBuyNft={handleBuyNft} />
+            ) : !walletAddress ? (
+                <div className="text-5xl text-center relative top-48 text-yellow-700">
+                    Hey, Please connect your Wallet First
+                </div>
             ) : (
                 <div className="text-5xl text-center relative top-48 text-yellow-700">
                     sad! market place have no items to display
