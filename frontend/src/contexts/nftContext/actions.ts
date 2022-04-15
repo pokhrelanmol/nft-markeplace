@@ -133,6 +133,17 @@ export const buyNft = async (
     await (
         await marketplace.purchaseItem(itemId, { value: totalPrice })
     ).wait();
-
-    console.log(itemId);
+    marketplace.on(
+        "Bought",
+        (
+            _itemId: string,
+            nftAddress: string,
+            tokenId: number,
+            price: number,
+            seller: string,
+            newOwnerAddress: string
+        ) => {
+            console.log(newOwnerAddress);
+        }
+    );
 };

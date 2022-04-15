@@ -54,7 +54,13 @@ const Navbar = () => {
                     to="/my-nft"
                     className="text-medium hover:border-b hover:border-blue-500 cursor-pointer"
                 >
-                    My NFT
+                    My Listed Nfts
+                </Link>
+                <Link
+                    to="/my-purchases"
+                    className="text-medium hover:border-b hover:border-blue-500 cursor-pointer"
+                >
+                    My purchases
                 </Link>
             </ul>
             {/* connect wallet */}

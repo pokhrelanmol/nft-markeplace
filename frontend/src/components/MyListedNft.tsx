@@ -20,7 +20,6 @@ const MyListedNft = () => {
         const itemCount = await contract.Marketplace.itemCount();
         for (let i = 1; i <= itemCount; i++) {
             const item = await contract.Marketplace.items(i);
-
             if (item.seller === (await getSignerAddress())) {
                 const uri = await contract.Nft.tokenURI(item.itemId);
                 // use uri to fetch the nft metadata stored on ipfs
@@ -54,15 +53,49 @@ const MyListedNft = () => {
         fetchListedItems();
     }, []);
     return (
-        <div className="flex p-8">
-            {listedItems.length > 0 ? (
-                <NftCard items={listedItems} handleBuyNft={() => {}} />
-            ) : (
-                <div className="text-5xl text-center relative top-48 text-yellow-700">
-                    sad! market place have no items to display
+        <>
+            <div className="bg-red-100 mb-5">
+                <div className="text-5xl text-center relative  text-yellow-700">
+                    Listed Items
                 </div>
-            )}
-        </div>
+
+                <div className="flex p-8 justify-around">
+                    {listedItems.length > 0 ? (
+                        <>
+                            <NftCard
+                                items={listedItems}
+                                handleBuyNft={() => {}}
+                            />
+                        </>
+                    ) : (
+                        <div className="text-5xl text-center relative  text-yellow-700">
+                            No Listed Items
+                        </div>
+                    )}
+                </div>
+            </div>
+            {/* sold items */}
+            <div className="bg-blue-100">
+                <div className="text-5xl text-center relative  text-yellow-700">
+                    Sold Item
+                </div>
+
+                <div className="flex p-8 justify-around">
+                    {soldItems.length > 0 ? (
+                        <>
+                            <NftCard
+                                items={soldItems}
+                                handleBuyNft={() => {}}
+                            />
+                        </>
+                    ) : (
+                        <div className="text-5xl text-center relative  text-yellow-700">
+                            No Sold Items
+                        </div>
+                    )}
+                </div>
+            </div>
+        </>
     );
 };
 

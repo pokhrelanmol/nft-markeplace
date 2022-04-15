@@ -11,10 +11,10 @@ const NftCard = ({ items, handleBuyNft }: NftProps) => {
     const [signer, setSigner] = useState<string | null>();
     (async () => setSigner(await getSignerAddress()))();
     return (
-        <div>
+        <>
             {items.map((item: ItemDetails, index) => (
                 <div
-                    className=" w-60 p-1 mt-10 h-auto shadow-md rounded-lg pb-5 pt-2 space-y-1"
+                    className=" w-60 px-2 mt-10 h-auto shadow-md rounded-lg pb-5 pt-2 space-y-1"
                     key={index}
                 >
                     <img
@@ -41,7 +41,7 @@ const NftCard = ({ items, handleBuyNft }: NftProps) => {
                     )}
                 </div>
             ))}
-        </div>
+        </>
     );
 };
 
