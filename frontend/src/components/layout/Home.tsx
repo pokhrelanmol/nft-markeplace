@@ -10,7 +10,7 @@ const Home = () => {
     const { walletAddress } = useWallet();
 
     return (
-        <div className="flex space-x-8 ">
+        <div className="flex space-x-8 justify-center ">
             {items.length > 0 && !pending && walletAddress ? (
                 <NftCard items={items} handleBuyNft={handleBuyNft} />
             ) : !walletAddress ? (

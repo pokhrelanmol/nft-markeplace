@@ -68,7 +68,7 @@ const MyListedNft = () => {
                             />
                         </>
                     ) : (
-                        <div className="text-5xl text-center relative  text-yellow-700">
+                        <div className="text-5xl text-center relative  text-red-700">
                             No Listed Items
                         </div>
                     )}
@@ -89,7 +89,7 @@ const MyListedNft = () => {
                             />
                         </>
                     ) : (
-                        <div className="text-5xl text-center relative  text-yellow-700">
+                        <div className="text-5xl text-center relative  text-red-700">
                             No Sold Items
                         </div>
                     )}

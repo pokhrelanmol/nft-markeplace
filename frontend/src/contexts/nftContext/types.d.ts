@@ -17,6 +17,7 @@ export interface ItemDetails {
     image: string;
     sold?: boolean;
     tokenId?: number;
+    owner?: string;
 }
 [];
 
